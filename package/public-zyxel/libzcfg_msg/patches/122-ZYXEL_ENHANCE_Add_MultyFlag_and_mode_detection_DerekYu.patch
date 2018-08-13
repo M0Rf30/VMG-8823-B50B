@@ -1,0 +1,17 @@
+Index: libzcfg_msg-1.0/zcfg_msg.h
+===================================================================
+--- libzcfg_msg-1.0.orig/zcfg_msg.h	2017-12-07 15:44:36.315324999 +0800
++++ libzcfg_msg-1.0/zcfg_msg.h	2017-12-07 15:46:22.171199443 +0800
+@@ -219,9 +219,12 @@
+ #define ZCFG_MSG_BSA_STA_FILTER			    (523 | ZCFG_NO_WAIT_REPLY)
+ #endif /* #36467, MAC filter with SONiQ, cpwang, 2017-04-18 10:56:46 */
+ #ifdef BUILD_SONIQ
++/* App-agent message */
+ #define ZCFG_MSG_ENABLE_SONiQ               (524 | ZCFG_NO_WAIT_REPLY)
+ #define ZCFG_MSG_PRESET_SSID_EN             (525 | ZCFG_NO_WAIT_REPLY)
+ #define ZCFG_MSG_PRESET_SSID_DIS            (529 | ZCFG_NO_WAIT_REPLY)
++#define ZCFG_MSG_PRESET_SSID_MODE           (530 | ZCFG_NO_WAIT_REPLY)
++#define ZCFG_MSG_APP_SOCKET_CLOSE           (531 | ZCFG_NO_WAIT_REPLY)
+ #endif
+ 
+ #define ZCFG_MSG_FAKEROOT_COMMAND			(800 | ZCFG_NO_WAIT_REPLY)
