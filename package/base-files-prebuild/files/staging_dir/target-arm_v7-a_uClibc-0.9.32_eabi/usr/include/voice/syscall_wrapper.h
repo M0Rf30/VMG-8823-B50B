@@ -30,12 +30,17 @@ void *zyMemcpy(void *p_destination, const void *p_source, unsigned int num_bytes
 void *zyMemset(void *p_mem_block, unsigned int value_to_set, unsigned int num);
 void *zyMalloc(unsigned int size);
 void zyFree(void *ptr);
+
 char *zyStrcpy(char *p_destination, const char *p_source);
 char *zyStrncpy(char *p_destination, const char *p_source, unsigned int max_num_bytes);
 char *zyStrcat(char *p_destination, const char *p_source);
+char *zyStrncat(char *p_destination, const char *p_source, unsigned int max_num_bytes); //Michael.20171225.004: Add to support additional proprietary-encapsulated string-related functions 'zyStrncat()', 'zyStrncmp()' and 'zyStrncasecmp()' in the 'syscall_wrapper.c'.
 char *zyStrtok(char *p_source, const char *p_delimiters);
-unsigned int zyStrcmp(const char *p_string_1, const char *p_string_2);
-unsigned int zyStrcasecmp(const char *p_string_1, const char *p_string_2);
+#define STRCMP_ERROR 32767 //Michael.20171225.002: Add to enhance all proprietary-encapsulated string-related functions 'zyStrXXX()' in syscall_wrapper.c to handle the input NULL pointer.
+int zyStrcmp(const char *p_string_1, const char *p_string_2); //Michael.20171225.003: Modify to correct the return value of functions 'syscall_wrapper.c/zyStrcmp() & zyStrcasecmp()' from 'unsigned int' to 'int'.
+int zyStrncmp(const char *p_string_1, const char *p_string_2, unsigned int max_num_bytes); //Michael.20171225.004: Add to support additional proprietary-encapsulated string-related functions 'zyStrncat()', 'zyStrncmp()' and 'zyStrncasecmp()' in the 'syscall_wrapper.c'.
+int zyStrcasecmp(const char *p_string_1, const char *p_string_2); //Michael.20171225.003: Modify to correct the return value of functions 'syscall_wrapper.c/zyStrcmp() & zyStrcasecmp()' from 'unsigned int' to 'int'.
+int zyStrncasecmp(const char *p_string_1, const char *p_string_2, unsigned int max_num_bytes); //Michael.20171225.004: Add to support additional proprietary-encapsulated string-related functions 'zyStrncat()', 'zyStrncmp()' and 'zyStrncasecmp()' in the 'syscall_wrapper.c'.
 unsigned int zyStrlen(const char *p_string);
 
 int zyMutexInit(pthread_mutex_t *mutex);

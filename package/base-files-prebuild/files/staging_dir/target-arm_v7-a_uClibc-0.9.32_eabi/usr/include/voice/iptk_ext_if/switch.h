@@ -128,6 +128,88 @@
 
 
 
+//===================================
+//=== Integrated (Phone and/or Call) Feature Flag ===
+//===================================
+//= Note-1: the Feature Flag here is like a central controller or function switch to usually control one or more other feature flag(s) to fulfill/achieve some dedicated/expected (Phone and/or Call) function.
+//=         Therefore, a Feature Flag could be moved here to well-form/construct the DEPENDENCY relationship, if necessary and feasible.
+//= Note-2: the Feature Flag here is MAYBE corresponding to a Customization feature/function.
+
+//Michael.20171220.001.B: Add the Distinctive Ring-related Feature Flag and Constant definitions, as well as the DEPENDency between them if necessary.
+#ifndef ZYXEL_VOIP_DISTINCTIVE_RING_SUPPORT
+#define ZYXEL_VOIP_DISTINCTIVE_RING_SUPPORT 1
+#endif //ZYXEL_VOIP_DISTINCTIVE_RING_SUPPORT.
+
+#if ZYXEL_VOIP_DISTINCTIVE_RING_SUPPORT
+	#define ZYXEL_VOIP_DISTINCTIVE_RING_PROFILE_MAX 9 //including the Splash Ring.
+
+	//NOTE/DEPENDENCY: 'ZYXEL_SIP_HDR_ALERT_INFO_RECEIVE_SUPPORT' is designed to be a stand-alone CALL feature. However, if/once 'ZYXEL_VOIP_DISTINCTIVE_RING_SUPPORT' is enabled, then it MUST be Enabled/Supported accordingly.
+	#if !(ZYXEL_SIP_HDR_ALERT_INFO_RECEIVE_SUPPORT)
+	#undef ZYXEL_SIP_HDR_ALERT_INFO_RECEIVE_SUPPORT
+	#define ZYXEL_SIP_HDR_ALERT_INFO_RECEIVE_SUPPORT	1
+	#endif //ZYXEL_SIP_HDR_ALERT_INFO_RECEIVE_SUPPORT.
+
+
+	/*Following DISTINCTIVE_RINGER_DESCRIPTION_CONFIG will be use in backend All customer flag SHOULD follow zcfg_be defined*/
+	#if defined(HAWAIIAN_TELCOM)
+		#define ZYXEL_VOIP_DISTINCTIVE_RINGER_DESCRIPTION_CONFIG_AUTO_ADD 1
+		#define ZYXEL_VOIP_SPLASH_RINGER_DESCRIPTION_CONFIG_AUTO_ADD 1
+	#else
+		#define ZYXEL_VOIP_DISTINCTIVE_RINGER_DESCRIPTION_CONFIG_AUTO_ADD 0
+		#define ZYXEL_VOIP_SPLASH_RINGER_DESCRIPTION_CONFIG_AUTO_ADD 0
+	#endif
+
+	#if ZYXEL_VOIP_DISTINCTIVE_RINGER_DESCRIPTION_CONFIG_AUTO_ADD
+		/*Other customer can add in here by #elif defined(XXXX)*/
+		#ifdef HAWAIIAN_TELCOM
+			#define ZYXEL_VOIP_DISTINCTIVE_RINGER_DESCRIPTION_CONFIG_PATTERN "http://127.0.0.1/nortel/dst_ring_%d" //This will be use to setting Ringer.Description.i.RingFile
+			#define ZYXEL_VOIP_DISTINCTIVE_RINGER_DESCRIPTION_CONFIG_NUM 8 //This use to  control how many instance of Ringer.Description.i will be created.
+		/*#elif defined(XXX)
+			#define ZYXEL_VOIP_DISTINCTIVE_RINGER_DESCRIPTION_CONFIG_PATTERN "http://127.0.0.1/nortel/dst_ring_%d" //This will be use to setting Ringer.Description.i.RingFile
+			#define ZYXEL_VOIP_DISTINCTIVE_RINGER_DESCRIPTION_CONFIG_NUM 8 //This use to  control how many instance of Ringer.Description.i will be created.
+		*/
+		#else //Generic pattern
+			#define ZYXEL_VOIP_DISTINCTIVE_RINGER_DESCRIPTION_CONFIG_PATTERN "dst_ring_%d" //This will be use to setting Ringer.Description.i.RingFile
+			#define ZYXEL_VOIP_DISTINCTIVE_RINGER_DESCRIPTION_CONFIG_NUM 8 //This use to  control how many instance of Ringer.Description.i will be created.
+		#endif
+	#endif
+
+	#if ZYXEL_VOIP_SPLASH_RINGER_DESCRIPTION_CONFIG_AUTO_ADD
+		/*Other customer can add in here by #elif defined(XXXX)*/
+		#ifdef HAWAIIAN_TELCOM
+			#define ZYXEL_VOIP_SPLASH_RINGER_DESCRIPTION_CONFIG_PATTERN "http://127.0.0.1/nortel/splash_ring" //This will be use to setting Ringer.Description.i.RingFile
+		/*#elif defined(XXX)
+			#define ZYXEL_VOIP_DISTINCTIVE_RINGER_DESCRIPTION_CONFIG_PATTERN "http://127.0.0.1/nortel/dst_ring_%d" //This will be use to setting Ringer.Description.i.RingFile
+		*/
+		#else //Generic pattern
+			#define ZYXEL_VOIP_SPLASH_RINGER_DESCRIPTION_CONFIG_PATTERN "splash_ring" //This will be use to setting Ringer.Description.i.RingFile
+		#endif
+	#endif //#if ZYXEL_VOIP_SPLASH_RINGER_DESCRIPTION_CONFIG_AUTO_ADD
+#endif //ZYXEL_VOIP_DISTINCTIVE_RING_SUPPORT.
+//Michael.20171220.001.E: Add.
+
+//Michael.20171124.001.B: Add to support the feature that while NO Enabled SIP Acct is Selected, the Phone Port would Behave Like it has NO function - (a)OffHook to play NO Tone (i.e. keep Silence) and (b)the corresponding VoIP LED always keeps in light-OFF no matter OffHook or OnHook states. This feature was first designed & implemented as a Customization Feature for the WIND Italy.
+#if ZYPRJ_CUSTOMER_WIND
+	//NOTE/DEPENDENCY: 'ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION' is designed to be a stand-alone PHONE feature. However, if/once 'ZYPRJ_CUSTOMER_WIND' is enabled, then it MUST be Enabled/Supported accordingly.
+	#if !(ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION)
+	#undef ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION
+	#define ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION	1
+	#endif //!(ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION).
+#endif //ZYPRJ_CUSTOMER_WIND.
+
+#ifndef ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION
+	//NOTE/DEPENDENCY: 'ZYXEL_PHONE_LED_KEEPS_ALWAYS_OFF_FOR_THE_CASE_NO_ENABLED_SIP_ACCT_IS_SELECTED_OPERATION_SUPPORT' is designed to be a stand-alone PHONE feature. However, if/once 'ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION' is enabled, then it MUST be Enabled/Supported accordingly.
+	//NOTE/DEPENDENCY: 'ZYXEL_PHONE_TONE_PLAYS_SILENCE_FOR_OFFHOOK_BUT_NO_ENABLED_SIP_ACCT_IS_SELECTED_SUPPORT' is designed to be a stand-alone PHONE feature. However, if/once 'ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION' is enabled, then it MUST be Enabled/Supported accordingly.
+	#define ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION	0
+	/** If Enabled, the DEPENDENCY will force the following two feature flags also Enabled:
+	 ** (1)ZYXEL_PHONE_LED_KEEPS_ALWAYS_OFF_FOR_THE_CASE_NO_ENABLED_SIP_ACCT_IS_SELECTED_OPERATION_SUPPORT.
+	 ** (2)ZYXEL_PHONE_TONE_PLAYS_SILENCE_FOR_OFFHOOK_BUT_NO_ENABLED_SIP_ACCT_IS_SELECTED_SUPPORT.
+	 **/
+#endif //ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION.
+//Michael.20171124.001.E: Add.
+
+
+
 //===========================================
 //=== Phone Port Type Support Control's (Compile) Switch Flag ===
 //===========================================
@@ -263,7 +345,65 @@
 //=============================
 //=== Local Phone Port VoIP LED Control ===
 //=============================
-/*** VoIP/Phone LED Operation Special Logic-(1). ***/
+/*** VoIP/Phone LED Operation Special Logic-(4): WIND Customization (ZyIMS Internal Feature Flag Only). ***/
+/*==(4a)==*/
+//Michael.20171124.001.B: Add to support the feature that while NO Enabled SIP Acct is Selected, the Phone Port would Behave Like it has NO function - (a)OffHook to play NO Tone (i.e. keep Silence) and (b)the corresponding VoIP LED always keeps in light-OFF no matter OffHook or OnHook states. This feature was first designed & implemented as a Customization Feature for the WIND Italy.
+#if ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION
+	//NOTE/DEPENDENCY: 'ZYXEL_PHONE_LED_KEEPS_ALWAYS_OFF_FOR_THE_CASE_NO_ENABLED_SIP_ACCT_IS_SELECTED_OPERATION_SUPPORT' is designed to be a stand-alone PHONE feature. However, if/once 'ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION' is enabled, then it MUST be Enabled/Supported accordingly.
+	#if !(ZYXEL_PHONE_LED_KEEPS_ALWAYS_OFF_FOR_THE_CASE_NO_ENABLED_SIP_ACCT_IS_SELECTED_OPERATION_SUPPORT)
+	#undef ZYXEL_PHONE_LED_KEEPS_ALWAYS_OFF_FOR_THE_CASE_NO_ENABLED_SIP_ACCT_IS_SELECTED_OPERATION_SUPPORT
+	#define ZYXEL_PHONE_LED_KEEPS_ALWAYS_OFF_FOR_THE_CASE_NO_ENABLED_SIP_ACCT_IS_SELECTED_OPERATION_SUPPORT	1
+	#endif //!(ZYXEL_PHONE_LED_KEEPS_ALWAYS_OFF_FOR_THE_CASE_NO_ENABLED_SIP_ACCT_IS_SELECTED_OPERATION_SUPPORT).
+#endif //ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION.
+
+#ifndef ZYXEL_PHONE_LED_KEEPS_ALWAYS_OFF_FOR_THE_CASE_NO_ENABLED_SIP_ACCT_IS_SELECTED_OPERATION_SUPPORT
+	#define ZYXEL_PHONE_LED_KEEPS_ALWAYS_OFF_FOR_THE_CASE_NO_ENABLED_SIP_ACCT_IS_SELECTED_OPERATION_SUPPORT	0
+#endif //ZYXEL_PHONE_LED_KEEPS_ALWAYS_OFF_FOR_THE_CASE_NO_ENABLED_SIP_ACCT_IS_SELECTED_OPERATION_SUPPORT.
+//Michael.20171124.001.E: Add.
+
+/*==(4b)==*/
+//Michael.20171110.001.B: Add to support to Re-define to Make the Amber VoIP LED stand-for or represent the corresponding Phone Port's Selected (Outgoing Call) SIP Account is "Enabled but UnRegistered (due to maybe (a)Register Fail (NOT Registered yet), or (b)Manually DeRegsitered)", rather than "Registered and also getting the MWI". This feature was first designed & implemented as a Customization Feature for the WIND Italy.
+#if ZYPRJ_CUSTOMER_WIND
+	//NOTE/DEPENDENCY: 'ZYXEL_PHONE_LED_AMBER_LED_STANDS_FOR_SELECTED_SIP_ACCT_ENABLED_BUT_UNREGISTERED_OPERATION_SUPPORT' is designed to be a stand-alone PHONE feature. However, if/once 'ZYPRJ_CUSTOMER_WIND' is enabled, then it MUST be Enabled/Supported accordingly.
+	#if !(ZYXEL_PHONE_LED_AMBER_LED_STANDS_FOR_SELECTED_SIP_ACCT_ENABLED_BUT_UNREGISTERED_OPERATION_SUPPORT)
+	#undef ZYXEL_PHONE_LED_AMBER_LED_STANDS_FOR_SELECTED_SIP_ACCT_ENABLED_BUT_UNREGISTERED_OPERATION_SUPPORT
+	#define ZYXEL_PHONE_LED_AMBER_LED_STANDS_FOR_SELECTED_SIP_ACCT_ENABLED_BUT_UNREGISTERED_OPERATION_SUPPORT	1
+	#endif //!(ZYXEL_PHONE_LED_AMBER_LED_STANDS_FOR_SELECTED_SIP_ACCT_ENABLED_BUT_UNREGISTERED_OPERATION_SUPPORT).
+#endif //ZYPRJ_CUSTOMER_WIND.
+
+#ifndef ZYXEL_PHONE_LED_AMBER_LED_STANDS_FOR_SELECTED_SIP_ACCT_ENABLED_BUT_UNREGISTERED_OPERATION_SUPPORT
+	#define ZYXEL_PHONE_LED_AMBER_LED_STANDS_FOR_SELECTED_SIP_ACCT_ENABLED_BUT_UNREGISTERED_OPERATION_SUPPORT	0
+#endif //ZYXEL_PHONE_LED_AMBER_LED_STANDS_FOR_SELECTED_SIP_ACCT_ENABLED_BUT_UNREGISTERED_OPERATION_SUPPORT.
+//Michael.20171110.001.E: Add.
+
+/*==(4c)==*/
+//Michael.20171229.001.B: Add to enhance 'ZYXEL_PHONE_LED_AMBER_LED_STANDS_FOR_SELECTED_SIP_ACCT_ENABLED_BUT_UNREGISTERED_OPERATION_SUPPORT' able to decide/control whether the AMBER VoIP LED has to BLINK or Not while the Phone Port is OffHooked or RINGing under the AMBER LED condition. This VoIP LED detail operation logic control feature was (originally) designed to meet WIND's requirement since they request to have AMBER LED Always Solid ON at that condition to prevent the BLINK behavior from giving the end-users wrong impression that there are traffic passing through.
+#if ZYPRJ_CUSTOMER_WIND
+	//NOTE/DEPENDENCY: 'ZYXEL_PHONE_LED_WHEN_AMBER_CONDITION_OFFHOOK_AND_RINGING_NO_BLINK_SUPPORT' is designed to be a stand-alone PHONE feature. However, if/once 'ZYPRJ_CUSTOMER_WIND' is enabled, then it MUST be Enabled/Supported accordingly.
+	#if !(ZYXEL_PHONE_LED_WHEN_AMBER_CONDITION_OFFHOOK_AND_RINGING_NO_BLINK_SUPPORT)
+	#undef ZYXEL_PHONE_LED_WHEN_AMBER_CONDITION_OFFHOOK_AND_RINGING_NO_BLINK_SUPPORT
+	#define ZYXEL_PHONE_LED_WHEN_AMBER_CONDITION_OFFHOOK_AND_RINGING_NO_BLINK_SUPPORT	1
+	#endif //!(ZYXEL_PHONE_LED_WHEN_AMBER_CONDITION_OFFHOOK_AND_RINGING_NO_BLINK_SUPPORT).
+#endif //ZYPRJ_CUSTOMER_WIND.
+
+#ifndef ZYXEL_PHONE_LED_WHEN_AMBER_CONDITION_OFFHOOK_AND_RINGING_NO_BLINK_SUPPORT
+	#define ZYXEL_PHONE_LED_WHEN_AMBER_CONDITION_OFFHOOK_AND_RINGING_NO_BLINK_SUPPORT 0
+#endif //ZYXEL_PHONE_LED_WHEN_AMBER_CONDITION_OFFHOOK_AND_RINGING_NO_BLINK_SUPPORT.
+//Michael.20171229.001.E: Add.
+
+
+/*** VoIP/Phone LED Operation Special Logic-(1): Only GREEN LED per Port. ***/
+//Michael.20171110.001.B: Add to support to Re-define to Make the Amber VoIP LED stand-for or represent the corresponding Phone Port's Selected (Outgoing Call) SIP Account is "Enabled but UnRegistered (due to maybe (a)Register Fail (NOT Registered yet), or (b)Manually DeRegsitered)", rather than "Registered and also getting the MWI". This feature was first designed & implemented as a Customization Feature for the WIND Italy.
+// TODO: the following DEPENDENCY description & relationship MUST be Removed, especially after the 'ZYXEL_PHONE_LED_MWI_IS_STILL_PRESENTED_BY_NORMAL_GREEN_LED_OPERATION_SUPPORT' has been created & defined!!!
+#if ZYXEL_PHONE_LED_AMBER_LED_STANDS_FOR_SELECTED_SIP_ACCT_ENABLED_BUT_UNREGISTERED_OPERATION_SUPPORT
+	//NOTE/DEPENDENCY: 'ZYXEL_PHONE_LED_ONLY_GREEN_REG_LED_PER_PORT_OPERATION_SUPPORT' is designed to be a stand-alone PHONE feature. However, if/once 'ZYXEL_PHONE_LED_AMBER_LED_STANDS_FOR_SELECTED_SIP_ACCT_ENABLED_BUT_UNREGISTERED_OPERATION_SUPPORT' is enabled, then it MUST be Enabled/Supported accordingly.
+	#if !(ZYXEL_PHONE_LED_ONLY_GREEN_REG_LED_PER_PORT_OPERATION_SUPPORT)
+	#undef ZYXEL_PHONE_LED_ONLY_GREEN_REG_LED_PER_PORT_OPERATION_SUPPORT
+	#define ZYXEL_PHONE_LED_ONLY_GREEN_REG_LED_PER_PORT_OPERATION_SUPPORT 1
+	#endif //!(ZYXEL_PHONE_LED_ONLY_GREEN_REG_LED_PER_PORT_OPERATION_SUPPORT).
+#endif //ZYXEL_PHONE_LED_AMBER_LED_STANDS_FOR_SELECTED_SIP_ACCT_ENABLED_BUT_UNREGISTERED_OPERATION_SUPPORT.
+//Michael.20171110.001.E: Add.
+
 //Michael.20151203.001.B: Modify to rename the feature (compile) flag 'ZYXEL_PHONE_SINGLE_LED_OPERATION_SUPPORT' to 'ZYXEL_PHONE_LED_ONLY_GREEN_REG_LED_PER_PORT_OPERATION_SUPPORT'.
 //#ifndef ZYXEL_PHONE_SINGLE_LED_OPERATION_SUPPORT //Michael.20150526.001: Add to Enhance to Support Single LED Operation for one Local Phone Port.
 //#define ZYXEL_PHONE_SINGLE_LED_OPERATION_SUPPORT 0
@@ -273,18 +413,21 @@
 #endif //ZYXEL_PHONE_LED_ONLY_GREEN_REG_LED_PER_PORT_OPERATION_SUPPORT.
 //Michael.20151203.001.E: Modify.
 
-/*** VoIP/Phone LED Operation Special Logic-(2). ***/
+
+/*** VoIP/Phone LED Operation Special Logic-(2): RED (Fail) LED related. ***/
+/*==(2a)==*/
 //Michael.20151207.001.B: Add to support the Amber VoIP Phone LED is composed of lightening-up the Green & Red LEDs simultaneously.
 #ifndef ZYXEL_PHONE_LED_AMBER_MWI_LED_IS_COMPOSED_OF_GREEN_AND_RED_LED_OPERATION_SUPPORT
 	#define ZYXEL_PHONE_LED_AMBER_MWI_LED_IS_COMPOSED_OF_GREEN_AND_RED_LED_OPERATION_SUPPORT 0
 #endif //ZYXEL_PHONE_LED_AMBER_MWI_LED_IS_COMPOSED_OF_GREEN_AND_RED_LED_OPERATION_SUPPORT.
 
+/*==(2b)==*/
 #if ZYXEL_PHONE_LED_AMBER_MWI_LED_IS_COMPOSED_OF_GREEN_AND_RED_LED_OPERATION_SUPPORT
 	//NOTE/DEPENDENCY: 'ZYXEL_PHONE_LED_RED_FAIL_LED_OPERATION_SUPPORT' is designed to be a stand-alone PHONE feature. However, if/once 'ZYXEL_PHONE_LED_AMBER_MWI_LED_IS_COMPOSED_OF_GREEN_AND_RED_LED_OPERATION_SUPPORT' is enabled, then it MUST be Enabled/Supported accordingly.
 	#if !(ZYXEL_PHONE_LED_RED_FAIL_LED_OPERATION_SUPPORT)
 	#undef ZYXEL_PHONE_LED_RED_FAIL_LED_OPERATION_SUPPORT
 	#define ZYXEL_PHONE_LED_RED_FAIL_LED_OPERATION_SUPPORT 1
-	#endif //ZYXEL_PHONE_LED_RED_FAIL_LED_OPERATION_SUPPORT.
+	#endif //!(ZYXEL_PHONE_LED_RED_FAIL_LED_OPERATION_SUPPORT).
 #endif //ZYXEL_PHONE_LED_AMBER_MWI_LED_IS_COMPOSED_OF_GREEN_AND_RED_LED_OPERATION_SUPPORT.
 //Michael.20151207.001.E: Add.
 
@@ -294,10 +437,42 @@
 	#define ZYXEL_PHONE_LED_RED_FAIL_LED_OPERATION_SUPPORT 0
 #endif //ZYXEL_PHONE_LED_RED_FAIL_LED_OPERATION_SUPPORT.
 
-/*** VoIP/Phone LED Operation Special Logic-(3). ***/
+
+/*** VoIP/Phone LED Operation Special Logic-(3): Joint/Common Used Single Set (Bi-Color) LED. ***/
 #ifndef ZYXEL_PHONE_LED_SINGLE_SET_LED_COMMON_USED_BY_SEVERAL_PORTS_OPERATION_SUPPORT //Michael.20151203.002: Add to prepare the feature (compile) flag & its corresponding "make menuconfig" entry for the future usage & function implement.
 	#define ZYXEL_PHONE_LED_SINGLE_SET_LED_COMMON_USED_BY_SEVERAL_PORTS_OPERATION_SUPPORT 0
 #endif //ZYXEL_PHONE_LED_SINGLE_SET_LED_COMMON_USED_BY_SEVERAL_PORTS_OPERATION_SUPPORT.
+
+//Michael.20171106.001.B: Add to support the feature that - A Single Set LED (usually composed of the Green & Amber color ones) Commonly used by Several Phone Ports (p.s. 'All FXS' Phone Ports now, by default).
+#if ZYXEL_PHONE_LED_SINGLE_SET_LED_COMMON_USED_BY_SEVERAL_PORTS_OPERATION_SUPPORT
+	#ifndef COMMON_USED_SINGLE_SET_VOIP_LED_PHY_ID
+	#define COMMON_USED_SINGLE_SET_VOIP_LED_PHY_ID 0 //NOTE: Currently, this is designed to be FIXED at the First Set VoIP LED, i.e. PhyId=0.
+	#endif //COMMON_USED_SINGLE_SET_VOIP_LED_PHY_ID.
+#endif //ZYXEL_PHONE_LED_SINGLE_SET_LED_COMMON_USED_BY_SEVERAL_PORTS_OPERATION_SUPPORT.
+//Michael.20171106.001.E: Add.
+
+//Michael.20171124.002.B: Add to enhance 'PHONE_LED_SINGLE_SET_LED_COMMON_USED_BY_SEVERAL_PORTS_OPERATION_SUPPORT' able to change the VoIP LED FuncType(ColorType) Priority to support the feature where the Amber-color does NOT represent the MWI.
+#define ZYXEL_PHONE_LED_FUNC_TYPE_PRIORITY_LOW_TO_HIGH_IS_GREEN_AMBER_RED_SUPPORT 0 //Default Priority.
+#define ZYXEL_PHONE_LED_FUNC_TYPE_PRIORITY_LOW_TO_HIGH_IS_AMBER_GREEN_RED_SUPPORT 1
+#ifndef ZYXEL_PHONE_LED_FUNC_TYPE_PRIORITY
+	#define ZYXEL_PHONE_LED_FUNC_TYPE_PRIORITY	ZYXEL_PHONE_LED_FUNC_TYPE_PRIORITY_LOW_TO_HIGH_IS_GREEN_AMBER_RED_SUPPORT
+#endif //ZYXEL_PHONE_LED_FUNC_TYPE_PRIORITY.
+
+#if ZYPRJ_CUSTOMER_WIND
+	//NOTE/DEPENDENCY: 'ZYXEL_PHONE_LED_FUNC_TYPE_PRIORITY' is designed to be a stand-alone PHONE feature. However, if/once 'ZYPRJ_CUSTOMER_WIND' is enabled, then it MUST be Enabled/Supported accordingly.
+	#if !(ZYXEL_PHONE_LED_FUNC_TYPE_PRIORITY)
+	#undef ZYXEL_PHONE_LED_FUNC_TYPE_PRIORITY
+	#define ZYXEL_PHONE_LED_FUNC_TYPE_PRIORITY	ZYXEL_PHONE_LED_FUNC_TYPE_PRIORITY_LOW_TO_HIGH_IS_AMBER_GREEN_RED_SUPPORT
+	#endif //!(ZYXEL_PHONE_LED_FUNC_TYPE_PRIORITY).
+#endif //ZYPRJ_CUSTOMER_WIND.
+//Michael.20171124.002.E: Add.
+
+
+//Michael.20171114.001.B: Add to support to skip the VoIP LED Control Request which is totally the Same as the Current Operation Status (since the 'Michael.20171030.001' had made the PhoneSB able to record the VoIP LED Operation Status).
+#ifndef ZYXEL_PHONE_LED_SKIP_THE_VOIP_LED_CTRL_REQ_SAME_AS_THE_CURRENT_OP_STATUS
+	#define ZYXEL_PHONE_LED_SKIP_THE_VOIP_LED_CTRL_REQ_SAME_AS_THE_CURRENT_OP_STATUS 0
+#endif //ZYXEL_PHONE_LED_SKIP_THE_VOIP_LED_CTRL_REQ_SAME_AS_THE_CURRENT_OP_STATUS.
+//Michael.20171114.001.E: Add.
 
 
 
@@ -441,6 +616,7 @@
 	#define APPS_ZYIMS_LINE_PER_PROFILE_NUM	ZYXEL_SIP_LINE_PER_PROFILE_NUM_MAX  // TODO: it's better to replace all usage of 'APPS_ZYIMS_LINE_PER_PROFILE_NUM' to 'ZYXEL_SIP_LINE_PER_PROFILE_NUM_MAX'.
 #endif //APPS_ZYIMS_LINE_PER_PROFILE_NUM.
 
+
 //--------------------------------------------(SIP: SIP Header)
 //#define USER_AGENT_HDR  ""
 #define ZYXEL_SIP_HDR_USER_AGENT_NAME_DEFAULT "ZyXEL Communications Corp. SIP Client - ZyIMS VoIP"
@@ -448,6 +624,34 @@
 #ifndef ZYXEL_SIP_HDR_P_ACCESS_NETWORK_INFO_SUPPORT
 #define ZYXEL_SIP_HDR_P_ACCESS_NETWORK_INFO_SUPPORT 1 //However, you can dynamically switch this header ON/OFF by Filling/Clearing the corresponding Data Model paremeters: (1)Device.Services.VoiceService.{i}.VoiceProfile.{i}.X_ZYXEL_P_AccessNetworkInfo, (2)Device.Services.VoiceService.{i}.X_ZYXEL_Common.P_AccessNetworkInfo.
 #endif //ZYXEL_SIP_HDR_P_ACCESS_NETWORK_INFO_SUPPORT
+
+//Michael.20171006.001.B: Add to support to receive/retrieve and parse the <Alert-Info> header content presented in the Incoming SIP Message.
+#ifndef ZYXEL_SIP_HDR_ALERT_INFO_RECEIVE_SUPPORT
+//NOTE/DEPENDENCY: 'ZYXEL_SIP_HDR_ALERT_INFO_RECEIVE_SUPPORT' is designed to be a stand-alone CALL feature. However, if/once 'ZYXEL_VOIP_DISTINCTIVE_RING_SUPPORT' is enabled, then it MUST be Enabled/Supported accordingly.
+#define ZYXEL_SIP_HDR_ALERT_INFO_RECEIVE_SUPPORT 1
+#endif //ZYXEL_SIP_HDR_ALERT_INFO_RECEIVE_SUPPORT.
+
+#if ZYXEL_SIP_HDR_ALERT_INFO_RECEIVE_SUPPORT
+	#define ZYXEL_SIP_HDR_ALERT_INFO_STR "Alert-Info"
+#endif //ZYXEL_SIP_HDR_ALERT_INFO_RECEIVE_SUPPORT.
+//Michael.20171006.001.E: Add.
+
+
+//--------------------------------------------(SIP: Register & De-Register)
+//Michael.20170926.001.B: Add by removing from the below section "(SIP: Special & Customization Config)".
+//Michael.20140522.001.B: Add to support De-Register ALL active VoIP SIP accounts first before doing reboot.
+#ifndef ZYXEL_SIP_DEREGISTER_ALL_ACCT_BEFORE_SHUTDOWN_SUPPORT
+#define ZYXEL_SIP_DEREGISTER_ALL_ACCT_BEFORE_SHUTDOWN_SUPPORT 1
+#endif //ZYXEL_SIP_DEREGISTER_ALL_ACCT_BEFORE_SHUTDOWN_SUPPORT.
+//Michael.20140522.001.E: Add.
+//Michael.20170926.001.E: Add.
+
+//----------
+//Michael.20170926.001.B: Add to Reserve an VoIP IOP BitFlag '(1 << 8)' to Support to DeRegister Local Contact Only.
+#ifndef ZYXEL_SIP_DEREGISTER_LOCAL_CONTACT_ONLY_SUPPORT
+#define ZYXEL_SIP_DEREGISTER_LOCAL_CONTACT_ONLY_SUPPORT 1
+#endif //ZYXEL_SIP_DEREGISTER_LOCAL_CONTACT_ONLY_SUPPORT.
+//Michael.20170926.001.E: Add.
 
 
 //--------------------------------------------(SIP: Call Session Count/Number)
@@ -516,13 +720,14 @@
 #define ZYXEL_SIP_AUTH_DATA_QOP_ENFORCE_TYPE "auth-int" //normal case , Option: "auth-int", "auth-conf", "auth". yushiuan add 2015/03/20.
 #endif //ZYPRJ_CUSTOMER_SUNRISE.
 
-
+#if 0 //Michael.20170926.001: Remarked to be remove to the the above section "(SIP: Register & De-Register)".
 //----------
 //Michael.20140522.001.B: Add to support De-Register ALL active VoIP SIP accounts first before doing reboot.
 #ifndef ZYXEL_SIP_DEREGISTER_ALL_ACCT_BEFORE_SHUTDOWN_SUPPORT
 #define ZYXEL_SIP_DEREGISTER_ALL_ACCT_BEFORE_SHUTDOWN_SUPPORT 1
 #endif //ZYXEL_SIP_DEREGISTER_ALL_ACCT_BEFORE_SHUTDOWN_SUPPORT.
 //Michael.20140522.001.E: Add.
+#endif // 0.
 
 //----------
 //Michael.20141006.001.B: Add to support the successive SIP register session gap mechanism.
@@ -561,11 +766,20 @@
 
 
 //==================================< MM/DSP (DSP & Phone API Architcture Re-orgainzation)
+#ifndef USING_DSP_API_FROM_SINGLE_PROCESS //Michael.20180427.001: Add to Implement the 'USING_DSP_API_FROM_SINGLE_PROCESS' feature for the DSP & Phone API Usage method for the BRCM SDK 502L04 and the Newer/Later One(s).
 #if defined (ZYXEL_VOICE_PLATFORM_CODE) && defined (PLATFORM_MTK_EVA_CODE) && (ZYXEL_VOICE_PLATFORM_CODE==PLATFORM_MTK_EVA_CODE) //Michael.20150727.003: Add to employ the new defined Platform Code to identify the Platform Type and make the compile flag 'ZYIMS_IS_UNDER_PORTING_DEVELOP_PHASE' is only (auto) defined for one still under the Porting/Developing Phase/Stage.
-#define USING_DSP_API_FROM_SINGLE_PROCESS 1 //For Control DSP From One process, Econet Must Enable This. 2015-09-01 Steve
+	#define USING_DSP_API_FROM_SINGLE_PROCESS 1 //For Control DSP From One process, MTK/Econet platform MUST Enable This. 2015-09-01 Steve.
+#elif defined (ZYXEL_VOICE_PLATFORM_CODE) && defined (PLATFORM_BRCM5_CODE) && (ZYXEL_VOICE_PLATFORM_CODE==PLATFORM_BRCM5_CODE) //Michael.20180427.001: Add to Implement the 'USING_DSP_API_FROM_SINGLE_PROCESS' feature for the DSP & Phone API Usage method for the BRCM SDK 502L04 and the Newer/Later One(s).
+	#define USING_DSP_API_FROM_SINGLE_PROCESS 1 //For Control DSP From One process, BRCM platform with SDK 502L01~502L04+ MUST Enable This. 2018-05-03 Michael Lin.
 #else
-#define USING_DSP_API_FROM_SINGLE_PROCESS 0
+	#define USING_DSP_API_FROM_SINGLE_PROCESS 0
 #endif //#if defined (ZYXEL_VOICE_PLATFORM_CODE) && defined (PLATFORM_MTK_EVA_CODE) && (ZYXEL_VOICE_PLATFORM_CODE==PLATFORM_MTK_EVA_CODE).
+#endif //USING_DSP_API_FROM_SINGLE_PROCESS.
+
+#ifndef ZYXEL_VOICE_USING_DSP_AND_PHONE_API_FROM_SINGLE_PROCESS //Michael.20180427.001: Add to Implement the 'USING_DSP_API_FROM_SINGLE_PROCESS' feature for the DSP & Phone API Usage method for the BRCM SDK 502L04 and the Newer/Later One(s).
+//Make the 'ZYXEL_VOICE_USING_DSP_AND_PHONE_API_FROM_SINGLE_PROCESS' always SYNC to the 'USING_DSP_API_FROM_SINGLE_PROCESS' for easy usage and maintenance.
+#define ZYXEL_VOICE_USING_DSP_AND_PHONE_API_FROM_SINGLE_PROCESS USING_DSP_API_FROM_SINGLE_PROCESS
+#endif //ZYXEL_VOICE_USING_DSP_AND_PHONE_API_FROM_SINGLE_PROCESS.
 
 
 //==================================< MM/DSP (Jitter Buffer Size, (L)EC, PLC, DRC or AGC, ..., etc.)
@@ -856,6 +1070,10 @@
 #endif //ZYXEL_VOICE_KSOCKET_RTP.
 //#define KSOCKET_RTP_ENABLE 1
 //--------------------------------------------
+//Amber.20170908: Add for the handling policy of the content item 'CNANE' of the RTCP message type 'SDES' (by the 'mm_core_rtcp.c/rtcpModifySdes()').
+#define RTCP_SDES_ITEM_CNAME_USE_THE_TEXT_FROM_CFG_DATA_SUPPORT 1
+#define RTCP_SDES_ITEM_CNAME_USE_THE_TEXT_FROM_CFG_DATA_BUT_REJECT_NULL_STR 1
+//--------------------------------------------
 #if ZYXEL_VOICE_SUPPORT_SRTP
 	#define SRTP_SUPPORT	1
 #else
@@ -909,7 +1127,7 @@
 	#if !(ZYXEL_VOIP_FIREWALL_RULE_SUPPORT)
 	#undef ZYXEL_VOIP_FIREWALL_RULE_SUPPORT
 	#define ZYXEL_VOIP_FIREWALL_RULE_SUPPORT	1
-	#endif //ZYXEL_VOIP_FIREWALL_RULE_SUPPORT.
+	#endif //!(ZYXEL_VOIP_FIREWALL_RULE_SUPPORT).
 #endif //BUILD_IGNORE_DIRECT_IP.
 //Michael.20160309.001.E: Add
 
@@ -928,7 +1146,7 @@
 	#if !(ZYXEL_VOIP_WAN_PORT_RESERVE_SUPPORT)
 	#undef ZYXEL_VOIP_WAN_PORT_RESERVE_SUPPORT
 	#define ZYXEL_VOIP_WAN_PORT_RESERVE_SUPPORT	1	//to Against SIP-ALG.
-	#endif //ZYXEL_VOIP_WAN_PORT_RESERVE_SUPPORT.
+	#endif //!(ZYXEL_VOIP_WAN_PORT_RESERVE_SUPPORT).
 	#endif // 0.
 #endif //ZYXEL_VOIP_FIREWALL_RULE_SUPPORT.
 
@@ -992,12 +1210,28 @@
 #define slicStartCIDRing	slicStartRing2	//Michael.20140103.002: Add to extend 'Michael.20130626.003'.
 #define PhoneStartCIDRing	PhoneStartRing2 //Michael.20130626.003: Add to have a alias name 'PhoneStartCIDRing()' for 'Endpoint_itf.c/PhoneStartRing2()'.
 
-//==================================< Phone Event Handler Control
-/*For Econet to solve RFC2833 not generate when mm not handle phone event 2015-08-27 Steve.     *
-  *This will receive DSP phone event in MM and send to voiceApp by IPC                                         */
-#define ZYXEL_PHONE_EVENT_HANDLE_IN_MM_AND_SEND_TO_VOICEAPP 1
 
-#define PHONE_EVENT_CHANNEL_PATH "/var/phone_event.channel"  //Phone event IPC file
+//==================================< Phone Event Handler Control
+/* For Econet to solve RFC2833 not generate when mm not handle phone event 2015-08-27 Steve.     *
+  * This will receive DSP phone event in MM and send to voiceApp by IPC                                         */
+
+//Michael.20180427.002.B: Modify to Implement the 'ZYXEL_PHONE_EVENT_HANDLE_IN_MM_AND_SEND_TO_VOICEAPP' feature for the DSP & Phone Event Notification method for the BRCM SDK 502L04 and the Newer/Later One(s).
+//#define ZYXEL_PHONE_EVENT_HANDLE_IN_MM_AND_SEND_TO_VOICEAPP 1
+//#define PHONE_EVENT_CHANNEL_PATH "/var/phone_event.channel"  //Phone event IPC file
+#ifndef ZYXEL_PHONE_EVENT_HANDLE_IN_MM_AND_SEND_TO_VOICEAPP
+#if defined (ZYXEL_VOICE_PLATFORM_CODE) && defined (PLATFORM_MTK_EVA_CODE) && (ZYXEL_VOICE_PLATFORM_CODE==PLATFORM_MTK_EVA_CODE)
+	#define ZYXEL_PHONE_EVENT_HANDLE_IN_MM_AND_SEND_TO_VOICEAPP 1 //For Control DSP From One process, MTK/Econet platform MUST Enable This.
+#elif defined (ZYXEL_VOICE_PLATFORM_CODE) && defined (PLATFORM_BRCM5_CODE) && (ZYXEL_VOICE_PLATFORM_CODE==PLATFORM_BRCM5_CODE)
+	#define ZYXEL_PHONE_EVENT_HANDLE_IN_MM_AND_SEND_TO_VOICEAPP 1 //For Control DSP From One process, BRCM platform with SDK 502L01~502L04+ MUST Enable This.
+#else
+	#define ZYXEL_PHONE_EVENT_HANDLE_IN_MM_AND_SEND_TO_VOICEAPP 0
+#endif //#if defined (ZYXEL_VOICE_PLATFORM_CODE) && defined (PLATFORM_MTK_EVA_CODE) && (ZYXEL_VOICE_PLATFORM_CODE==PLATFORM_MTK_EVA_CODE).
+#endif //ZYXEL_PHONE_EVENT_HANDLE_IN_MM_AND_SEND_TO_VOICEAPP.
+
+#if ZYXEL_PHONE_EVENT_HANDLE_IN_MM_AND_SEND_TO_VOICEAPP
+#define PHONE_EVENT_CHANNEL_PATH "/var/phone_event.channel"  //MM->voiceApp: Phone event IPC file.
+#endif //ZYXEL_PHONE_EVENT_HANDLE_IN_MM_AND_SEND_TO_VOICEAPP.
+//Michael.20180427.002.E: Modify.
 
 
 //==================================< Tone (for Phone/Call/Customization Feature usage).
@@ -1018,8 +1252,11 @@
 #define ZYXEL_VOIP_FEATURE_TONE_RELEASE				15
 #define ZYXEL_VOIP_FEATURE_TONE_CONGESTION			16
 
+//==================================< Ring (for Phone/Call/Customization Feature usage).
+#define ZYIMS_CLI_TYPE_DO_ACTION_PHONE_RING_CTRL_RING_ID_SUPPORT 1
 
-//==================================< Phone Feature: (a)Country/Region-code related, (b)Dialing related.
+
+//==================================< Phone Feature: (a)Country/Region-code related, (b)MWI & VMWI & Caller-ID(CID|CLID) / CLIP, (c)Dialing related.
 
 /*define region default support value in main region table. This will cause all region be supported in main region table when .config not define ZYXEL_REGION_SUPPORT_DEFAULT.*
  *If don't want to enable all region. Should use "-DZYXEL_REGION_SUPPORT_DEFAULT=0" and "-DZYXEL_REGION_SUPPORT_XX=1" to add each region support in compile time.    *
@@ -1085,6 +1322,14 @@
 	#endif //#if ZYPRJ_CUSTOMER_SOLARUS
 
 	#define ZYXEL_VISUAL_MWI_SUPPORT	1 //Visual MWI (VMWI).
+
+	//Michael.20170914.001.B: Add to Support the Out-of-Dialog (OOD) NOTIFY for MWI withOut sending SUBSCRIBE first.
+	//#if ZYPRJ_CUSTOMER_TISCALI
+	//	#define ZYXEL_VOIP_MWI_OOD_NOTIFY_WO_SUBSCRIBE_SUPPORT 1
+	//#else
+	//	#define ZYXEL_VOIP_MWI_OOD_NOTIFY_WO_SUBSCRIBE_SUPPORT 0
+	//#endif //ZYPRJ_CUSTOMER_TISCALI.
+	//Michael.20170914.001.E: Add.
 #endif //ZYXEL_VOIP_MWI_SUPPORT.
 //--------------------------------------------
  //Michael.20150709.001.B: Add to support the VMWI API.
@@ -1096,6 +1341,8 @@
 	#define ZYXEL_PHONE_VMWI_ONLY_ONHOOK_STATE_SUPPORT 1 //NOTE: MUST ALWAYS be ON(1) due to the physical limitation!! This is learned from the Practical Experiment Result (a.k.a Experience) based-on BRCM platform's VMWI APIs on (2015.07.14, Mon.).
 #endif //ZYXEL_PHONE_VMWI_SUPPORT.
  //Michael.20150709.001.E: Add.
+//--------------------------------------------
+#define ZYXEL_PHONE_CLID_COPY_PHONENUMBER_TO_SUBSTITUTE_THE_EMPTY_DISPLAYNAME_PART_SUPPORT 1 //Michael.20180320.001: Add to make Caller-ID (CLID) support to Copy the PhoneNumber part content to substitute the EMPTY DisplayName part info to improve to prevent/avoid the CLIP Display IOP issue of some Telephone-sets (e.g. Siemens Euroset 5020).
 //--------------------------------------------
 #define DIAL_PLAN          		1	/* for DialPlan Support */
 //--------------------------------------------
@@ -1135,6 +1382,22 @@
 
 //==================================< Phone Feature: (c)Phone FSM.
 #define PHONE_INCOMMING_CALL_OPEN_CHANNEL_BEFORE_CHANGETO_ANSWER 1 //**Must be Enabled on MTK/EcoNet platform!!
+
+
+//==================================< Phone Feature: Customization or Special.
+//Michael.20171124.001.B: Add to support the feature that while NO Enabled SIP Acct is Selected, the Phone Port would Behave Like it has NO function - (a)OffHook to play NO Tone (i.e. keep Silence) and (b)the corresponding VoIP LED always keeps in light-OFF no matter OffHook or OnHook states. This feature was first designed & implemented as a Customization Feature for the WIND Italy.
+#if ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION
+	//NOTE/DEPENDENCY: 'ZYXEL_PHONE_TONE_PLAYS_SILENCE_FOR_OFFHOOK_BUT_NO_ENABLED_SIP_ACCT_IS_SELECTED_SUPPORT' is designed to be a stand-alone PHONE feature. However, if/once 'ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION' is enabled, then it MUST be Enabled/Supported accordingly.
+	#if !(ZYXEL_PHONE_TONE_PLAYS_SILENCE_FOR_OFFHOOK_BUT_NO_ENABLED_SIP_ACCT_IS_SELECTED_SUPPORT)
+	#undef ZYXEL_PHONE_TONE_PLAYS_SILENCE_FOR_OFFHOOK_BUT_NO_ENABLED_SIP_ACCT_IS_SELECTED_SUPPORT
+	#define ZYXEL_PHONE_TONE_PLAYS_SILENCE_FOR_OFFHOOK_BUT_NO_ENABLED_SIP_ACCT_IS_SELECTED_SUPPORT	1
+	#endif //!(ZYXEL_PHONE_TONE_PLAYS_SILENCE_FOR_OFFHOOK_BUT_NO_ENABLED_SIP_ACCT_IS_SELECTED_SUPPORT).
+#endif //ZYXEL_PHONE_NO_ENABLED_SIP_ACCT_IS_SELECTED_MAKE_THE_PHONE_PORT_BEHAVE_LIKE_NO_FUNCTION.
+
+#ifndef ZYXEL_PHONE_TONE_PLAYS_SILENCE_FOR_OFFHOOK_BUT_NO_ENABLED_SIP_ACCT_IS_SELECTED_SUPPORT
+	#define ZYXEL_PHONE_TONE_PLAYS_SILENCE_FOR_OFFHOOK_BUT_NO_ENABLED_SIP_ACCT_IS_SELECTED_SUPPORT	0
+#endif //ZYXEL_PHONE_TONE_PLAYS_SILENCE_FOR_OFFHOOK_BUT_NO_ENABLED_SIP_ACCT_IS_SELECTED_SUPPORT.
+//Michael.20171124.001.E: Add.
 
 
 
@@ -1218,6 +1481,14 @@
 #endif //ZYXEL_VOIP_SIP_UNREG_OUT_CALL_TO_SAME_SERVER_SUPPORT.
 //Michael.20141022.001.E: Add.
 
+#if 0 //Removed to the top for the Feature-DEPENDENCY consideration.
+//Michael.20171220.001.B: Add the Distinctive Ring-related Feature Flag and Constant definitions, as well as the DEPENDency between them if necessary.
+#ifndef ZYXEL_VOIP_DISTINCTIVE_RING_SUPPORT
+#define ZYXEL_VOIP_DISTINCTIVE_RING_SUPPORT 1
+#endif //ZYXEL_VOIP_DISTINCTIVE_RING_SUPPORT.
+//Michael.20171220.001.E: Add.
+#endif // 0.
+
 
 //--------------------------------------------(The operation logic of the following conditional compile MAY lead to Error situtaion!)
 //#ifdef EARLY_MEDIA
@@ -1229,6 +1500,7 @@
 //--------------------------------------------
 #define CALL_TRANSFER			1
 #define ZYNOS_CALL_TRANSFER	1	//support for Blind-Transfer, Consult-Transfer
+#define ZYXEL_VOIP_CALL_TRANSFER_TRANSFEROR_SEND_OUT_BYE_TO_TRANSFEREE	1	//20171031.Amber: Add for Call Transfer Feature Change about Transferor send out bye to Transferee to disconnect the First Call.
 //--------------------------------------------
 //#define CALL_FORWARD		1
 //--------------------------------------------
@@ -1287,7 +1559,11 @@
 
 //Michael.20151109.001.B: Add to support the feature that One SIP Acct is totally occupied by the First Associated Local Phone Port. This feature is originally requested by the WIND(@Italy) project.
 #if ZYPRJ_CUSTOMER_WIND
+	//NOTE/DEPENDENCY: 'ZYXEL_VOIP_SIP_ACCT_OCCUPIED_BY_THE_FIRST_ASSOCIATED_LOCAL_PHONE_PORT' is designed to be a stand-alone CALL feature. However, if/once 'ZYPRJ_CUSTOMER_WIND' is enabled, then it MUST be Enabled/Supported accordingly.
+	#if !(ZYXEL_VOIP_SIP_ACCT_OCCUPIED_BY_THE_FIRST_ASSOCIATED_LOCAL_PHONE_PORT)
+	#undef ZYXEL_VOIP_SIP_ACCT_OCCUPIED_BY_THE_FIRST_ASSOCIATED_LOCAL_PHONE_PORT
 	#define ZYXEL_VOIP_SIP_ACCT_OCCUPIED_BY_THE_FIRST_ASSOCIATED_LOCAL_PHONE_PORT	1
+	#endif //!(ZYXEL_VOIP_SIP_ACCT_OCCUPIED_BY_THE_FIRST_ASSOCIATED_LOCAL_PHONE_PORT).
 #endif //ZYPRJ_CUSTOMER_WIND.
 
 #ifndef ZYXEL_VOIP_SIP_ACCT_OCCUPIED_BY_THE_FIRST_ASSOCIATED_LOCAL_PHONE_PORT
@@ -1299,7 +1575,7 @@
 	#if !(ZYXEL_VOIP_PHONE_USING_THE_SIP_ACCT_MUST_BE_IN_THE_DL_PHONE_SELECT_BITMAP)
 	#undef ZYXEL_VOIP_PHONE_USING_THE_SIP_ACCT_MUST_BE_IN_THE_DL_PHONE_SELECT_BITMAP
 	#define ZYXEL_VOIP_PHONE_USING_THE_SIP_ACCT_MUST_BE_IN_THE_DL_PHONE_SELECT_BITMAP	1
-	#endif //ZYXEL_VOIP_PHONE_USING_THE_SIP_ACCT_MUST_BE_IN_THE_DL_PHONE_SELECT_BITMAP.
+	#endif //!(ZYXEL_VOIP_PHONE_USING_THE_SIP_ACCT_MUST_BE_IN_THE_DL_PHONE_SELECT_BITMAP).
 	//----------
 	#define ZYXEL_VOIP_PHONE_SIP_ACCT_OCCUPY_BY_DEFAULT_SELECT_ONE	0 //Make the default value 0 match to the requirement from & defined by the WIND Italy.
 	#define ZYXEL_VOIP_PHONE_SIP_ACCT_OCCUPY_BY_JUST_DIAL_IN_ONE		0 //Make the default value 0 match to the requirement from & defined by the WIND Italy.
@@ -1349,7 +1625,7 @@
 	#if !(ZYXEL_VOICE_FAX_MODE_G711_PT_DISABLE_T38_CAP)
 	#undef ZYXEL_VOICE_FAX_MODE_G711_PT_DISABLE_T38_CAP
 	#define ZYXEL_VOICE_FAX_MODE_G711_PT_DISABLE_T38_CAP	1
-	#endif //ZYXEL_VOICE_FAX_MODE_G711_PT_DISABLE_T38_CAP.
+	#endif //!(ZYXEL_VOICE_FAX_MODE_G711_PT_DISABLE_T38_CAP).
 #endif //ZYXEL_VOICE_CONFIG_TR069_FAXT38_ENABLE_MAPPING_TO_FAXMODE.
 
 #ifndef ZYXEL_VOICE_CONFIG_TR069_SIP_PHONE_MAPPING_BY_STD_PHY_REFERENCE_LIST

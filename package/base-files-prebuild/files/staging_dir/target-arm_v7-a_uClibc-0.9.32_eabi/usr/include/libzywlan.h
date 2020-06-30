@@ -49,6 +49,9 @@ typedef enum {
 	WLCMD_GET_INTF_INFO_GEN,
 	WLCMD_GET_INTF_INFO_FAT,
 #endif
+#ifdef GUEST_SSID_WPS_PBC
+	WLCMD_WPS_IPTV,
+#endif
 	WLCMD_NONE
 } WL_CMD_TYPE_t;
 
@@ -380,6 +383,9 @@ typedef struct wlmodule_t {
 	zcfgRet_t (*beWifi_EnablePresetSSID)(const char*, int);
 	zcfgRet_t (*beWifi_EnableSoniqEvt)(bool);
 	zcfgRet_t (*beWifi_GetVlanID)(int, int, int*);
+#endif
+#ifdef SSID_PRIORITY
+	zcfgRet_t (*beWifi_StartWpsIptvPBC)(wlinfo_s *, const char *);
 #endif
 }wlmodule_s;
 

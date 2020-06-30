@@ -26,6 +26,9 @@ include $(INCLUDE_DIR)/package.mk
 #These lines describe what your package does and its place in the menu config
 
 export CONFIG_ELISA_CUSTOMIZATION PRODUCT_NAME CONFIG_ZYXEL_RMA_FW_SUPPORT
+export CONFIG_ZYXEL_IPV6_UPLOAD_DIAG_ENABLE
+
+PKG_BUILD_DEPENDS:=zcfg libjson libopenssl
 
 PKG_BUILD_DEPENDS:=zcfg libjson
 
@@ -77,6 +80,8 @@ ifneq ($(strip $(TCSUPPORT_BOOTROM_LARGE_SIZE)),)
 EXTRA_CFLAGS += -DBOOTROM_LARGE_SIZE
 endif
 
+EXTRA_CFLAGS += -I$(LINUX_DIR)/user_headers/include
+
 # Zyxel Feature Bits
 ifeq ($(CONFIG_ZYXEL_FEATURE_BITS),y)
 EXTRA_CFLAGS += -DZYXEL_FEATURE_BITS
@@ -122,6 +127,7 @@ endif
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include
 	$(CP) $(PKG_BUILD_DIR)/*.h $(1)/usr/include/
+	$(CP) $(PKG_BUILD_DIR)/libzyutil_encrypt/*.h $(1)/usr/include/
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(CP) $(PKG_BUILD_DIR)/libzyutil.so $(1)/usr/lib/
 endef

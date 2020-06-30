@@ -631,7 +631,9 @@ extern char callFeatureKey[CALL_FEATURE_NUMBERS][CALL_FEATURE_MAX_KEY_LEN];
 #define ERROR_CAUSE_BUSY_HERE		486
 #endif //CCBS_SUPPORT.
 
-#define WEB_CALLSTATUS_PHONENUM_LENGTH	(32+1)
+//Amber.20180626: To fix PeerNumber of Call Stauts on GUI/CLI only show 32bit Number while remote number is over 32bit. //This is also part of the bugfix of the Redmine issue [#50599][VoIP] Speed Dial cannot accepts send 128 digits number.
+//#define WEB_CALLSTATUS_PHONENUM_LENGTH	(32+1)
+#define WEB_CALLSTATUS_PHONENUM_LENGTH	(MAX_OUTGOING_REMOTE_PEER_SIP_USERID_LEN+1)
 #define WEB_CALLSTATUS_CODEC_LENGTH		(10+1)
 
 /*____________________________________________________________________________*/
@@ -654,6 +656,7 @@ typedef struct dialDigitNum_s
 	uint16 dialDigitFlags;		/* Dial Digit Flags */
 	char dateTime[14];		/* date/time */
 	char cname[MAX_CNAME_LENGTH];
+	uint8 distinctiveRingId; /* The distinctiveRingId convert form the Incomnig SIP INVITE <Alert-Info> header */
 } dialDigitNum_t;
 
 typedef struct dialInfor_s

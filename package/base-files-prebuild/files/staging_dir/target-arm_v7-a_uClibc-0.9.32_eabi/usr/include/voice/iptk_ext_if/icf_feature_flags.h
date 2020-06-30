@@ -72,7 +72,7 @@
 /* Flag for Enabling Traces */
 /* Comment this Flag to Disable Trace */ 
 #define ICF_TRACE_ENABLE             1
-
+#define ICF_UNIQUE_CALL_ID_CHANGES   1
 /* Flag to get detailed function enter exit traces */
 #define ICF_DETAILED_DEBUG_TRACE 1 
 #define ICF_INTERFACE_TRACE_ENABLE 1

@@ -4,7 +4,7 @@ This is the buildroot provided by ZyXeL under their open-source programme.
 
 ## Original ZyXeL instructions
 ```
-README for VMG8823-Bx0B(V5.13(ABEJ.4)C0)
+README for VMG8823-Bx0B(V5.13(ABEJ.5)C0)
 
 
 0. Introduction
@@ -17,7 +17,7 @@ README for VMG8823-Bx0B(V5.13(ABEJ.4)C0)
 
    A. README						- This file
 
-   B. V513ABEJ4C0_GPL.tar.bz2	- Open Source Code of VMG8823-Bx0B and Open Source Code of Toolchain
+   B. V513ABEJ5C0_GPL.tar.bz2	- Open Source Code of VMG8823-Bx0B and Open Source Code of Toolchain
 
 
 2. Prepare the build OS.
@@ -91,7 +91,7 @@ You can flash images/ras.bin straight to your device from the device's Web UI.
 
 ## Version
 
-These sources correspond to version 5.13(ABEJ4)C0 of ZyXeL's binary build.
+These sources correspond to version 5.13(ABEJ5)C0 of ZyXeL's binary build.
 
 ## License
 

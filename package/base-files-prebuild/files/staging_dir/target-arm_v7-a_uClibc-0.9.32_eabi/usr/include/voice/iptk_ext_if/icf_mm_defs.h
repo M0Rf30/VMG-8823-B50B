@@ -105,7 +105,7 @@ extern "C"
 #define ICF_MAX_ENCODING_STR_LEN                     16
 
 /* Maximum number of codecs in a single Codec List used in codec_list_st */	
-#define ICF_MAX_CODEC_IN_LIST                        10
+#define ICF_MAX_CODEC_IN_LIST                        20
 
 
 /* RTP inactivity duration. This duration is in seconds */

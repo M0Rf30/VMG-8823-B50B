@@ -46,11 +46,15 @@
 
 
 #define  USERID_LENGTH				128	/* Changed. In order to meet Tr069. Keith */
+//Amber.20180628: This is also part of the bugfix of the Redmine issue [#50599][VoIP] Speed Dial cannot accepts send 128 digits number.
+#define  MAX_OUTGOING_REMOTE_PEER_SIP_USERID_LEN	64
+#define  MAX_OUTGOING_TARGET_SIP_USERID_LEN			MAX_OUTGOING_REMOTE_PEER_SIP_USERID_LEN
 
-#define  INTERFACE_NAME_LEN		20
-#define  SIP_DOMAIN_NAME_LEN		256 /* Changed. In order to meet Tr069. Keith */
-#define  SIP_SERVER_ADDR_LEN		256 /* Changed. In order to meet Tr069. Keith */
-#define  SIP_REGISTER_ADDR_LEN		256 /* Changed. In order to meet Tr069. Keith */
+
+#define  INTERFACE_NAME_LEN                        20
+#define  SIP_DOMAIN_NAME_LEN                       256 /* Changed. In order to meet Tr069. Keith */
+#define  SIP_SERVER_ADDR_LEN                       256 /* Changed. In order to meet Tr069. Keith */
+#define  SIP_REGISTER_ADDR_LEN                     256 /* Changed. In order to meet Tr069. Keith */
 
 #define  STUN_SERV_NAME_LEN		128
 #define  SIP_FAKE_NAME_LEN			128
@@ -1486,6 +1490,15 @@ typedef struct VoiceProfLineStatsObj_st{/*R*/
 #define TR104S_STATE_HOLD			"Hold"
 #define TR104S_STATE_DISCONNECTING	"Disconnecting"
 #define TR104S_STATE_UNKNOWN		"Unknown"
+
+#define SUPPORTED_INDEX_LEVEL 6
+
+typedef struct objIdx_s
+{
+    uint8_t level;
+    uint8_t idx[SUPPORTED_INDEX_LEVEL];
+} objIdx_t;
+
 /*! \brief Obj struct for InternetGatewayDevice.Services.VoiceService.{i}.VoiceProfile.{i}.Line.{i}.*/
 /*Object associated with a distinct voice line.
 Support for adding and removing lines is
@@ -1536,6 +1549,9 @@ typedef struct VoiceProfLineObj_st{/*W*/
 
 	/*type : VoiceProfObj_t*/
 	void*	VoiceProfObjSelect;
+
+    objIdx_t objIid;
+
 }VoiceProfLineObj_t;
 
 /* The definition for VoiceProfObj_st.DTMFMethod , VoiceProfObj_st.DTMFMethodG711 */
@@ -1696,6 +1712,8 @@ typedef	struct VoiceProfObj_st{/*W*/
 	char	ZyXEL_P_AccessNetworkInfo[128+1];
 
 #endif
+
+    objIdx_t objIid;
 
 }VoiceProfObj_t;
 
@@ -1937,7 +1955,7 @@ typedef struct ZyXEL_VoiceDECT_s {
 
 
 /* VoiceServiceCommon_t.specialFlag */
-#if 0 //Old definition and some of them can be replaced by the following 'VoiceServiceProf_t.voipIOPFlags'!!
+#if 0 //Old definition and some of them can be replaced by the following 'VoiceProfObj_t.ZyXEL_voipIOPFlags' (was: 'VoiceProfObj_t.voipIOPFlags')!!
 #define SPT_SPECIAL_RTP				(1 << 0)	/* bit1: 0/1 disable/enable voice after receiving ACK */
 #define SPT_SPECIAL_RFC3265		(1 << 1)	/* bit2: 0/1 disable/enable RFC3265 */
 #define SPT_SPECIAL_WALKERSUN 	(1 << 2)	/* bit3: 0/1 enable/disable to quote the auth for qop */
@@ -1969,17 +1987,19 @@ typedef struct ZyXEL_VoiceDECT_s {
 #define ZyXEL_LOG_NOTICE	5
 #define ZyXEL_LOG_DEBUG	7
 
-/*VoiceServiceProf_t.voipIOPFlags*/
-#define VOIP_IOP_FLAG_REPLACE_DIGIT (1 << 0)
-#define VOIP_IOP_FLAG_REMOVE_DEFAULT_PORT_IN_REQUEST_URI (1 << 1)
-#define VOIP_IOP_FLAG_REMOVE_ROUTE_HEADER (1 << 2)
-#define VOIP_IOP_FLAG_UPDATE_REQD_NO_UPDATE (1 << 3)
+/*VoiceProfObj_t.ZyXEL_voipIOPFlags (was: VoiceProf_t.voipIOPFlags)*/
+#define VOIP_IOP_FLAG_REPLACE_DIGIT								(1 << 0)
+#define VOIP_IOP_FLAG_REMOVE_DEFAULT_PORT_IN_REQUEST_URI		(1 << 1)
+#define VOIP_IOP_FLAG_REMOVE_ROUTE_HEADER						(1 << 2)
+#define VOIP_IOP_FLAG_UPDATE_REQD_NO_UPDATE					(1 << 3)
 //#ifdef NEW_ZYIMS_VOIP //Michael.20121023.001: Remarked to be Always Enabled!
-#define VOIP_IOP_FLAG_REMOVE_AUTHORIZAION_HEADER_IN_ACK (1 << 4)
-#define VOIP_IOP_FLAG_183_RTP_BIDIRECTION (1 << 5)
+#define VOIP_IOP_FLAG_REMOVE_AUTHORIZAION_HEADER_IN_ACK		(1 << 4)
+#define VOIP_IOP_FLAG_183_RTP_BIDIRECTION						(1 << 5)
+#define VOIP_IOP_FLAG_T38_FAX_STREAM_DO_NOT_CHANGE_PORT		(1 << 6) /*To let T.38 FAX stream use same port as audio stream. Steve 2016-02-01 Add*/
+#define VOIP_IOP_FLAG_SUPPORT_OOD_MWI_NOTIFY_WO_SUBSCRIBE	(1 << 7) //Michael.20170914.001: Add to Reserve an VoIP IOP BitFlag '(1 << 7)' to Support the Out-of-Dialog (OOD) NOTIFY for MWI withOut sending SUBSCRIBE first.
+#define VOIP_IOP_FLAG_DEREGISTER_LOCAL_CONTACT_ONLY			(1 << 8) //Michael.20170926.001: Add to Reserve an VoIP IOP BitFlag '(1 << 8)' to Support to DeRegister Local Contact Only.
+// TODO: <<NOTE>> Once you Add a New VoIP IOP BitFlag Definition here, you MUST also Add the corresponding 'VoIP IOP BitFlag Detail info Illustration/Dump' action in the function $(ZyIMS)/port/config_sys/$(CONFIG_SYS)/cli_fe/voicecli_config.c/config_showVoipIOPBitFlag_Detail() !!
 //#ifdef NEW_ZYIMS_VOIP //Michael.20121023.001: Remarked to be Always Enabled!
-/*To let T.38 FAX stream use same port as audio stream. Steve 2016-02-01 Add*/
-#define VOIP_IOP_FLAG_T38_FAX_STREAM_DO_NOT_CHANGE_PORT (1 << 6)
 
 
 typedef struct ZyXEL_VoiceCommon_st {
