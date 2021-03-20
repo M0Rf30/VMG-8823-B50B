@@ -10,9 +10,8 @@ PKG_NAME:=lzma
 PKG_VERSION:=4.65
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-#PKG_SOURCE_URL:=http://downloads.openwrt.org/sources/
+PKG_SOURCE_URL:=http://downloads.openwrt.org/sources/
 PKG_MD5SUM:=434e51a018b4c8ef377bf81520a53af0
-PKG_SOURCE_URL:=@ZyXEL_SITE/opensource/tools/archiver
 
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/$(PKG_NAME)-$(PKG_VERSION)
 

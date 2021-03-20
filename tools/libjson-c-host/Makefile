@@ -12,9 +12,8 @@ PKG_VERSION:=0.9
 PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-#PKG_SOURCE_URL:=http://oss.metaparadigm.com/json-c/
+PKG_SOURCE_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/jsonc/
 PKG_MD5SUM:=3a13d264528dcbaf3931b0cede24abae
-PKG_SOURCE_URL:=@ZyXEL_SITE/opensource/libs
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=COPYING

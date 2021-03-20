@@ -10,10 +10,9 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=xfce-macros
 PKG_VERSION:=4.8.0
 
-#PKG_SOURCE_URL:=http://archive.xfce.org/xfce/4.8/src
+PKG_SOURCE_URL:=http://archive.xfce.org/xfce/4.8/src
 PKG_SOURCE:=xfce4-dev-tools-$(PKG_VERSION).tar.bz2
 PKG_MD5SUM:=9591299c49d92d00ba47974c42a735fa
-PKG_SOURCE_URL:=@ZyXEL_SITE/opensource/tools
 
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/xfce4-dev-tools-$(PKG_VERSION)
 

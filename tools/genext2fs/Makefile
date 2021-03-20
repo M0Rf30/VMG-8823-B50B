@@ -11,9 +11,8 @@ PKG_NAME:=genext2fs
 PKG_VERSION:=1.4.1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-#PKG_SOURCE_URL:=@SF/genext2fs
+PKG_SOURCE_URL:=@SF/genext2fs
 PKG_MD5SUM:=b7b6361bcce2cedff1ae437fadafe53b
-PKG_SOURCE_URL:=@ZyXEL_SITE/opensource/tools
 
 include $(INCLUDE_DIR)/host-build.mk
 

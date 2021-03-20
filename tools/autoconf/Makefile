@@ -10,9 +10,8 @@ PKG_NAME:=autoconf
 PKG_VERSION:=2.68
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-#PKG_SOURCE_URL:=@GNU/autoconf
+PKG_SOURCE_URL:=@GNU/autoconf
 PKG_MD5SUM:=864d785215aa60d627c91fcb21b05b07
-PKG_SOURCE_URL:=@ZyXEL_SITE/opensource/tools
 
 include $(INCLUDE_DIR)/host-build.mk
 
