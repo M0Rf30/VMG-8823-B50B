@@ -66,10 +66,10 @@ start() {
 	touch /var/log/lastlog
 	touch /tmp/resolv.conf.auto
 	ln -sf /tmp/resolv.conf.auto /tmp/resolv.conf
-	grep -q debugfs /proc/filesystems && mount -o noatime -t debugfs debugfs /sys/kernel/debug
+	grep -q debugfs /proc/filesystems && /bin/mount -o noatime -t debugfs debugfs /sys/kernel/debug
 	[ "$FAILSAFE" = "true" ] && touch /tmp/.failsafe
 
-	load_modules /etc/modules.d/*
+	insert_modules /etc/modules.d/*
 
 	# allow wifi modules time to settle
 	sleep 1

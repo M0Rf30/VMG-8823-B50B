@@ -1,6 +1,7 @@
 #!/bin/sh
-# Copyright (C) 2006-2011 OpenWrt.org
+# Copyright (C) 2006-2013 OpenWrt.org
 # Copyright (C) 2006 Fokus Fraunhofer <carsten.tittel@fokus.fraunhofer.de>
+# Copyright (C) 2010 Vertical Communications
 
 
 debug () {
@@ -151,8 +152,8 @@ config_get_bool() {
 	local _tmp
 	config_get _tmp "$2" "$3" "$4"
 	case "$_tmp" in
-		1|on|true|enabled) _tmp=1;;
-		0|off|false|disabled) _tmp=0;;
+		1|on|true|yes|enabled) _tmp=1;;
+		0|off|false|no|disabled) _tmp=0;;
 		*) _tmp="$4";;
 	esac
 	export ${NO_EXPORT:+-n} "$1=$_tmp"
@@ -202,7 +203,7 @@ config_list_foreach() {
 	done
 }
 
-load_modules() {
+insert_modules() {
 	[ -d /etc/modules.d ] && {
 		cd /etc/modules.d
 		sed 's/^[^#]/insmod &/' $* | ash 2>&- || :

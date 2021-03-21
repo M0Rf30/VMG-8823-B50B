@@ -30,7 +30,7 @@ boot_hook_init initramfs
 boot_hook_init preinit_mount_root
 
 for pi_source_file in /lib/preinit/*; do
-    . $pi_source_file
+	. $pi_source_file
 done
 
 boot_run_hook preinit_essential
