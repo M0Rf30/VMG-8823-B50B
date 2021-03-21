@@ -12,11 +12,10 @@ PKG_VERSION:=2018.76
 PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-#PKG_SOURCE_URL:= \
+PKG_SOURCE_URL:= \
 	http://matt.ucc.asn.au/dropbear/releases/ \
 	http://www.mirrors.wiretapped.net/security/cryptography/apps/ssh/dropbear/
 PKG_MD5SUM:=c3912f7fcdcc57c99937e4a79480d2c2
-PKG_SOURCE_URL:=@ZyXEL_SITE/opensource/network/services
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE libtomcrypt/LICENSE libtommath/LICENSE
@@ -100,7 +99,7 @@ define Build/Compile
 		PROGRAMS="dropbearconvert"
 endef
 
-define Package/dropbear/install	
+define Package/dropbear/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/dropbearmulti $(1)/usr/sbin/dropbear
 	$(INSTALL_DIR) $(1)/usr/bin
@@ -126,8 +125,6 @@ define Package/dropbear/install
 	$(INSTALL_DIR) -d -m 755 $(1)/etc/mycert
 	ln -s /data/dropbear/dropbear_rsa_host_key $(1)/etc/mycert/ssh.rsa
 ###	$(INSTALL_BIN) $(PKG_BUILD_DIR)/dropbear_rsa_host_key.ZyXEL $(1)/etc/mycert/ssh.rsa
-	$(CP) ./files/authorized_keys $(1)/etc/
-	chmod 644 $(1)/etc/authorized_keys
 endef
 
 #define Package/dropbearconvert/install
